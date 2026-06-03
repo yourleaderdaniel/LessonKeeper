@@ -39,7 +39,7 @@ Prerequisites:
 - [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-studio-build-tools/) with the "Desktop development with C++" workload
 
 ```bash
-git clone https://github.com/<your-username>/LessonKeeper.git
+git clone https://github.com/yourleaderdaniel/LessonKeeper.git
 cd LessonKeeper
 npm install
 
