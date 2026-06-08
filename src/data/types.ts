@@ -20,14 +20,24 @@ export type AppSettings = {
   timeFormat: TimeFormat;
 };
 
+/**
+ * How a student settles up.
+ *  - "prepaid":  pays in advance; each completed lesson deducts from balance.
+ *  - "postpaid": pays cash after each lesson; no balance is tracked, but
+ *                completed lessons still count toward the Profit total.
+ * Old saved students without this field are treated as "prepaid".
+ */
+export type PaymentType = "prepaid" | "postpaid";
+
 export type Student = {
   id: string;
   name: string;
   /** If null, use settings.defaultPrice. */
   customPrice: number | null;
-  /** Prepaid balance. Can go negative — that's the student's debt. */
+  /** Prepaid balance. Can go negative — that's the student's debt. Ignored for postpaid. */
   prepaidBalance: number;
   phone: string | null;
+  paymentType: PaymentType;
   createdAt: string; // ISO 8601
 };
 

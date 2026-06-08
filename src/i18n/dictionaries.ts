@@ -129,6 +129,37 @@ const ru: Dict = {
   // Alerts
   "alert.loadFailed.title": "⚠ Не удалось загрузить сохранённые данные.",
   "alert.loadFailed.body": "Чтобы не повредить файл, автосохранение отключено в этой сессии. Закройте приложение и проверьте файл {path}.",
+
+  // Navigation: profit screen
+  "nav.profit": "Прибыль",
+
+  // Home: postpaid tag
+  "home.postpaidTag": "После урока",
+
+  // Student dialog: payment type
+  "studentDialog.field.paymentType": "Тип оплаты",
+  "studentDialog.paymentType.prepaid": "Предоплата",
+  "studentDialog.paymentType.postpaid": "После урока",
+  "studentDialog.paymentType.prepaidNote": "Ученик платит вперёд, и баланс уменьшается после каждого занятия.",
+  "studentDialog.paymentType.postpaidNote": "Ученик платит наличными после каждого занятия. Баланс не считается, но урок всё равно идёт в Прибыль.",
+
+  // Profit screen
+  "profit.title": "Прибыль",
+  "profit.subtitle": "Сколько ты заработал на индивидуальных уроках.",
+  "profit.stat.thisMonth": "В этом месяце",
+  "profit.stat.last30": "За последние 30 дней",
+  "profit.stat.allTime": "Всё время",
+  "profit.lessonsCount": "Уроков: {count}",
+  "profit.monthly.title": "По месяцам",
+  "profit.monthly.empty": "Пока не было проведённых уроков. Когда время урока пройдёт, он появится здесь.",
+  "profit.monthly.col.month": "Месяц",
+  "profit.monthly.col.lessons": "Уроков",
+  "profit.monthly.col.earnings": "Заработано",
+  "profit.recent.title": "Последние уроки",
+  "profit.recent.empty": "Здесь будут последние 25 проведённых уроков.",
+  "profit.recent.col.date": "Дата",
+  "profit.recent.col.student": "Ученик",
+  "profit.recent.col.amount": "Сумма",
 };
 
 const uk: Dict = {
@@ -244,6 +275,33 @@ const uk: Dict = {
 
   "alert.loadFailed.title": "⚠ Не вдалося завантажити збережені дані.",
   "alert.loadFailed.body": "Щоб не пошкодити файл, автозбереження вимкнено в цьому сеансі. Закрийте додаток і перевірте файл {path}.",
+
+  "nav.profit": "Прибуток",
+
+  "home.postpaidTag": "Після уроку",
+
+  "studentDialog.field.paymentType": "Тип оплати",
+  "studentDialog.paymentType.prepaid": "Передоплата",
+  "studentDialog.paymentType.postpaid": "Після уроку",
+  "studentDialog.paymentType.prepaidNote": "Учень платить наперед, баланс зменшується після кожного заняття.",
+  "studentDialog.paymentType.postpaidNote": "Учень платить готівкою після кожного заняття. Баланс не рахується, але урок усе одно йде в Прибуток.",
+
+  "profit.title": "Прибуток",
+  "profit.subtitle": "Скільки ти заробив на індивідуальних уроках.",
+  "profit.stat.thisMonth": "Цього місяця",
+  "profit.stat.last30": "За останні 30 днів",
+  "profit.stat.allTime": "Увесь час",
+  "profit.lessonsCount": "Уроків: {count}",
+  "profit.monthly.title": "По місяцях",
+  "profit.monthly.empty": "Поки не було проведених уроків. Коли час уроку мине, він з'явиться тут.",
+  "profit.monthly.col.month": "Місяць",
+  "profit.monthly.col.lessons": "Уроків",
+  "profit.monthly.col.earnings": "Зароблено",
+  "profit.recent.title": "Останні уроки",
+  "profit.recent.empty": "Тут будуть останні 25 проведених уроків.",
+  "profit.recent.col.date": "Дата",
+  "profit.recent.col.student": "Учень",
+  "profit.recent.col.amount": "Сума",
 };
 
 const en: Dict = {
@@ -359,6 +417,33 @@ const en: Dict = {
 
   "alert.loadFailed.title": "⚠ Failed to load saved data.",
   "alert.loadFailed.body": "To avoid corrupting the file, autosave is disabled for this session. Close the app and check the file at {path}.",
+
+  "nav.profit": "Profit",
+
+  "home.postpaidTag": "Pays after",
+
+  "studentDialog.field.paymentType": "Payment type",
+  "studentDialog.paymentType.prepaid": "Prepaid",
+  "studentDialog.paymentType.postpaid": "Pays after lesson",
+  "studentDialog.paymentType.prepaidNote": "Student pays upfront; balance decreases after each lesson.",
+  "studentDialog.paymentType.postpaidNote": "Student pays cash after each lesson. No balance is tracked, but the lesson still counts toward Profit.",
+
+  "profit.title": "Profit",
+  "profit.subtitle": "How much you've earned from private lessons.",
+  "profit.stat.thisMonth": "This month",
+  "profit.stat.last30": "Last 30 days",
+  "profit.stat.allTime": "All time",
+  "profit.lessonsCount": "Lessons: {count}",
+  "profit.monthly.title": "By month",
+  "profit.monthly.empty": "No completed lessons yet. When a lesson's time passes, it will show up here.",
+  "profit.monthly.col.month": "Month",
+  "profit.monthly.col.lessons": "Lessons",
+  "profit.monthly.col.earnings": "Earnings",
+  "profit.recent.title": "Recent lessons",
+  "profit.recent.empty": "The last 25 completed lessons will appear here.",
+  "profit.recent.col.date": "Date",
+  "profit.recent.col.student": "Student",
+  "profit.recent.col.amount": "Amount",
 };
 
 export const DICTIONARIES: Record<Language, Dict> = { ru, uk, en };

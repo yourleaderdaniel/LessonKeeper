@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useAppData } from "../data/AppDataContext";
 import { useT } from "../i18n/useT";
 import StudentDialog from "../components/StudentDialog";
-import { effectivePrice, formatMoney } from "../util/format";
-import type { Student } from "../data/types";
+import { effectivePrice, formatMoney, isPostpaid } from "../util/format";
+import type { PaymentType, Student } from "../data/types";
 
 export default function Home() {
   const { data, loaded, update } = useAppData();
@@ -38,6 +38,7 @@ export default function Home() {
     customPrice: number | null;
     prepaidBalance: number;
     phone: string | null;
+    paymentType: PaymentType;
   }) {
     if (editing) {
       const id = editing.id;
@@ -48,6 +49,7 @@ export default function Home() {
           target.customPrice = values.customPrice;
           target.prepaidBalance = values.prepaidBalance;
           target.phone = values.phone;
+          target.paymentType = values.paymentType;
         }
       });
     } else {
@@ -57,6 +59,7 @@ export default function Home() {
         customPrice: values.customPrice,
         prepaidBalance: values.prepaidBalance,
         phone: values.phone,
+        paymentType: values.paymentType,
         createdAt: new Date().toISOString(),
       };
       update((d) => {
@@ -139,6 +142,19 @@ type ListProps = {
   t: (key: string, vars?: Record<string, string | number>) => string;
 };
 
+function balanceCell(s: Student, formatBalance: (s: Student) => string, t: ListProps["t"]) {
+  if (isPostpaid(s)) {
+    return <span className="badge badge-postpaid">{t("home.postpaidTag")}</span>;
+  }
+  return (
+    <span
+      className={`balance ${s.prepaidBalance < 0 ? "negative" : s.prepaidBalance === 0 ? "zero" : "positive"}`}
+    >
+      {formatBalance(s)}
+    </span>
+  );
+}
+
 function StudentsTable({
   students,
   showPhone,
@@ -175,13 +191,7 @@ function StudentsTable({
                 </div>
               </td>
               <td>{formatPrice(s)}</td>
-              <td>
-                <span
-                  className={`balance ${s.prepaidBalance < 0 ? "negative" : s.prepaidBalance === 0 ? "zero" : "positive"}`}
-                >
-                  {formatBalance(s)}
-                </span>
-              </td>
+              <td>{balanceCell(s, formatBalance, t)}</td>
               {showPhone && <td>{s.phone ?? <span className="muted-inline">—</span>}</td>}
               <td>
                 <div className="row-actions">
@@ -257,13 +267,7 @@ function StudentsCards({
             </div>
             <div>
               <dt>{t("home.col.balance")}</dt>
-              <dd>
-                <span
-                  className={`balance ${s.prepaidBalance < 0 ? "negative" : s.prepaidBalance === 0 ? "zero" : "positive"}`}
-                >
-                  {formatBalance(s)}
-                </span>
-              </dd>
+              <dd>{balanceCell(s, formatBalance, t)}</dd>
             </div>
             {showPhone && (
               <div>

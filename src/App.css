@@ -525,6 +525,97 @@ p {
   border: 1px solid var(--border);
 }
 
+/* ===== Profit screen ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-card-primary {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.18) 0%,
+    rgba(139, 92, 246, 0.12) 100%
+  );
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+.stat-card-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.stat-card-amount {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.stat-card-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.profit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+.profit-table th,
+.profit-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.profit-table thead th {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.profit-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.profit-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.profit-table .row-highlight {
+  background: var(--accent-soft);
+}
+
+/* ===== Postpaid badge (Home screen) ===== */
+.badge-postpaid {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: var(--accent-hover);
+  background: var(--accent-soft);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
 /* ===== Settings grid ===== */
 .settings-grid {
   display: grid;

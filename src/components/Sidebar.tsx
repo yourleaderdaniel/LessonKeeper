@@ -1,6 +1,6 @@
 import { useT } from "../i18n/useT";
 
-export type ScreenId = "home" | "calendar" | "settings";
+export type ScreenId = "home" | "calendar" | "profit" | "settings";
 
 type Props = {
   active: ScreenId;
@@ -10,6 +10,7 @@ type Props = {
 const items: { id: ScreenId; icon: string; key: string }[] = [
   { id: "home", icon: "🏠", key: "nav.home" },
   { id: "calendar", icon: "📅", key: "nav.calendar" },
+  { id: "profit", icon: "💰", key: "nav.profit" },
   { id: "settings", icon: "⚙️", key: "nav.settings" },
 ];
 
@@ -38,7 +39,7 @@ export default function Sidebar({ active, onChange }: Props) {
         ))}
       </nav>
 
-      <div className="sidebar-footer">v0.1.0</div>
+      <div className="sidebar-footer">v0.2.0</div>
     </aside>
   );
 }

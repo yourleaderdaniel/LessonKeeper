@@ -1,12 +1,16 @@
 import type { AppData, LessonRecord } from "../data/types";
-import { effectivePrice } from "./format";
+import { effectivePrice, isPostpaid } from "./format";
 import { occurrencesInRange, ymd, parseHHMM } from "./dates";
 
 /**
  * Process all lesson occurrences that have happened since `data.lastProcessedAt`
  * up to `now`. For each new occurrence with no existing record, create a
- * "completed" record and deduct the student's effective price from their
- * prepaid balance (balance can go negative — that's the student's debt).
+ * "completed" record with `amountDeducted = effective price`.
+ *
+ * - Prepaid students: the price is also subtracted from `prepaidBalance`
+ *   (balance can go negative — that's the student's debt).
+ * - Postpaid students: balance is left untouched; the price is recorded so it
+ *   still contributes to the teacher's Profit total.
  *
  * On the very first run (`lastProcessedAt === null`), we DO NOT retroactively
  * deduct anything. We only set `lastProcessedAt` to `now` and start tracking
@@ -22,8 +26,8 @@ export function processElapsedLessons(
   const since = new Date(data.lastProcessedAt);
   if (since >= now) return data;
 
-  // First pass: figure out whether there are any new occurrences to process.
-  // If not, return the SAME data reference so React/save don't see a change.
+  // First pass: do we have any new occurrences? Return same data if not, so
+  // React/save don't see a change and we don't write to disk uselessly.
   let workToDo = false;
   outer: for (const lesson of data.lessons) {
     const student = data.students.find((s) => s.id === lesson.studentId);
@@ -47,7 +51,6 @@ export function processElapsedLessons(
 
   if (!workToDo) return data;
 
-  // We have at least one new occurrence. Clone and apply.
   const next = structuredClone(data);
 
   for (const lesson of next.lessons) {
@@ -64,10 +67,12 @@ export function processElapsedLessons(
       const existing = next.records.find(
         (r) => r.lessonId === lesson.id && r.date === dateStr,
       );
-      if (existing) continue; // already accounted for (completed or cancelled)
+      if (existing) continue;
 
       const price = effectivePrice(student, next.settings);
-      student.prepaidBalance -= price;
+      if (!isPostpaid(student)) {
+        student.prepaidBalance -= price;
+      }
       next.records.push({
         id: crypto.randomUUID(),
         lessonId: lesson.id,
@@ -84,15 +89,10 @@ export function processElapsedLessons(
 }
 
 /**
- * Toggle an occurrence's status between "completed" and "cancelled".
- * - completed → cancelled: refund the deducted amount.
- * - cancelled (past) → completed: deduct again with the current effective price.
- * - cancelled (future) → undo cancellation: delete the record entirely so
- *   future auto-processing handles it normally.
- * - no record + future: create a "cancelled" record (so auto-processing will
- *   skip this occurrence).
- * - no record + past: create a "cancelled" record with 0 deducted (treats as
- *   "the user is marking this past instance as not having happened").
+ * Toggle an occurrence's status. Balance is only adjusted for prepaid
+ * students — for postpaid students we just flip the record's status.
+ * The `amountDeducted` field is left intact on cancel so historical earnings
+ * can be restored or excluded from Profit by status filter.
  */
 export function toggleOccurrence(
   data: AppData,
@@ -113,9 +113,11 @@ export function toggleOccurrence(
 
   if (!existing) {
     if (occurrence <= now) {
-      // Past pending → mark as completed and deduct now.
+      // Past pending → mark as completed (and deduct now, for prepaid only).
       const price = effectivePrice(student, next.settings);
-      student.prepaidBalance -= price;
+      if (!isPostpaid(student)) {
+        student.prepaidBalance -= price;
+      }
       next.records.push({
         id: crypto.randomUUID(),
         lessonId,
@@ -125,7 +127,7 @@ export function toggleOccurrence(
         amountDeducted: price,
       });
     } else {
-      // Future → cancel this occurrence so auto-processing skips it.
+      // Future → cancel so auto-processing skips it.
       next.records.push({
         id: crypto.randomUUID(),
         lessonId,
@@ -136,27 +138,30 @@ export function toggleOccurrence(
       });
     }
   } else if (existing.status === "completed") {
-    // Refund and mark cancelled.
-    student.prepaidBalance += existing.amountDeducted;
-    existing.amountDeducted = 0;
+    // Refund (prepaid) and mark cancelled. Keep amountDeducted so we can
+    // restore the same price if the user toggles it back.
+    if (!isPostpaid(student)) {
+      student.prepaidBalance += existing.amountDeducted;
+    }
     existing.status = "cancelled";
   } else {
     // status === "cancelled" → restore.
     if (occurrence <= now) {
-      // Past occurrence: re-deduct at the current effective price.
+      // Past: re-deduct at current effective price (prepaid only).
       const price = effectivePrice(student, next.settings);
-      student.prepaidBalance -= price;
+      if (!isPostpaid(student)) {
+        student.prepaidBalance -= price;
+      }
       existing.amountDeducted = price;
       existing.status = "completed";
     } else {
-      // Future occurrence: just remove the cancellation record entirely.
+      // Future: remove the cancellation record entirely.
       next.records = next.records.filter((r) => r.id !== existing.id);
     }
   }
   return next;
 }
 
-/** Find the record (if any) for a specific lesson + occurrence date. */
 export function findRecord(
   records: LessonRecord[],
   lessonId: string,
@@ -166,10 +171,6 @@ export function findRecord(
   return records.find((r) => r.lessonId === lessonId && r.date === dateStr);
 }
 
-/**
- * Compute the canonical Date moment for a (weekday, time) recurring lesson
- * on the same week as `now` (used by UI to highlight "this week's instance").
- */
 export function thisWeeksMoment(
   weekday: number,
   time: string,
@@ -177,7 +178,7 @@ export function thisWeeksMoment(
 ): Date {
   const [h, m] = parseHHMM(time);
   const cur = new Date(now);
-  const todayWeekday = (cur.getDay() + 6) % 7; // 0=Mon
+  const todayWeekday = (cur.getDay() + 6) % 7;
   cur.setDate(cur.getDate() + (weekday - todayWeekday));
   cur.setHours(h, m, 0, 0);
   return cur;

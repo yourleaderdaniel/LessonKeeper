@@ -2,6 +2,7 @@ import { useState } from "react";
 import Sidebar, { type ScreenId } from "./components/Sidebar";
 import Home from "./screens/Home";
 import Calendar from "./screens/Calendar";
+import Profit from "./screens/Profit";
 import Settings from "./screens/Settings";
 import { useAppData } from "./data/AppDataContext";
 import { useT } from "./i18n/useT";
@@ -28,6 +29,7 @@ function App() {
         )}
         {screen === "home" && <Home />}
         {screen === "calendar" && <Calendar />}
+        {screen === "profit" && <Profit />}
         {screen === "settings" && <Settings />}
       </main>
     </div>

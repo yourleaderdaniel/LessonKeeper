@@ -36,7 +36,13 @@ export async function loadAppData(): Promise<AppData> {
   return {
     version: 1,
     settings: { ...DEFAULT_APP_DATA.settings, ...settings },
-    students: Array.isArray(data.students) ? data.students : [],
+    // Backfill paymentType for older saved students: they were always prepaid.
+    students: Array.isArray(data.students)
+      ? data.students.map((s) => ({
+          ...s,
+          paymentType: s.paymentType ?? ("prepaid" as const),
+        }))
+      : [],
     lessons: Array.isArray(data.lessons) ? data.lessons : [],
     records: Array.isArray(data.records) ? data.records : [],
     lastProcessedAt:

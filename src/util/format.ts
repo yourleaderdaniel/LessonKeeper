@@ -24,6 +24,11 @@ export function effectivePrice(student: Student, settings: AppSettings): number 
   return student.customPrice ?? settings.defaultPrice;
 }
 
+/** True if this student pays cash after each lesson (no prepaid balance). */
+export function isPostpaid(student: Student): boolean {
+  return student.paymentType === "postpaid";
+}
+
 /** Format a stored "HH:mm" (24h) time for display, honoring the user's setting. */
 export function formatTime(time24: string, format: TimeFormat): string {
   const m = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(time24);

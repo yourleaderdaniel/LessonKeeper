@@ -1,6 +1,6 @@
 [package]
 name = "lessonkeeper"
-version = "0.1.0"
+version = "0.2.0"
 description = "LessonKeeper — track paid private lessons"
 authors = ["you"]
 edition = "2021"

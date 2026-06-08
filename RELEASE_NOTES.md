@@ -1,31 +1,23 @@
-First public release of **LessonKeeper** — a desktop app for teachers and private tutors to keep track of paid individual lessons.
+## v0.2.0 — Profit screen, post-paid students, dialog fixes
 
-## Features
+### New
 
-- Students with default-or-custom lesson prices and prepaid balances (negative = debt).
-- Weekly recurring calendar of lessons by weekday + time.
-- Automatic balance deduction when a lesson's time passes (in real time while the app is open, and catch-up after restart).
-- Cancel and refund per specific occurrence via the lesson history dialog.
-- Interface in **Russian**, **Ukrainian**, **English** — switch live.
-- Currencies: **UAH**, **RUB**, **USD**, **EUR**.
-- **24-hour** and **12-hour** time formats.
-- Home screen as table or cards (your choice).
-- Data stored locally in JSON. Built-in **export/import** to a single backup file.
-- Modern dark UI, no servers, no accounts.
+- **Profit screen**: a new sidebar tab showing how much you've earned. Three big numbers (this month, last 30 days, all time) plus a month-by-month breakdown and the last 25 completed lessons with student names and amounts.
+- **Post-paid students**: when adding/editing a student you can now pick **Pays after lesson** instead of Prepaid. For those students no prepaid balance is tracked — each completed lesson simply counts toward Profit, and a cancelled lesson cancels cleanly (nothing is added or refunded).
 
-## Install
+### Fixes
 
-Pick one and run it:
+- **Add/Edit dialog no longer closes when you select text and drag the mouse outside the field.** The backdrop click now requires both the press AND the release to happen on the backdrop.
+- **Input length limits** on the student form: name up to 60 chars, phone up to 24 chars, prices up to 7 digits, balance up to 9 digits. No more 50-digit phone numbers or prepaid balances of a billion zeros.
 
-- **`LessonKeeper_0.1.0_x64-setup.exe`** — NSIS installer (smallest, recommended for most users).
-- **`LessonKeeper_0.1.0_x64_en-US.msi`** — MSI installer (for managed installs).
+### Notes
 
-Both add LessonKeeper to your Start Menu and "Add or Remove Programs". No external dependencies on Windows 10/11.
+- Existing data is fully compatible — students saved before this version are treated as Prepaid automatically.
+- The version number in the sidebar updates to `v0.2.0`.
 
-## Where your data lives
+## Installers
 
-```
-C:\Users\<you>\AppData\Roaming\com.lessonkeeper.app\lessonkeeper.json
-```
+- **`LessonKeeper_0.2.0_x64-setup.exe`** — NSIS installer (recommended).
+- **`LessonKeeper_0.2.0_x64_en-US.msi`** — MSI installer.
 
-You can back it up manually anytime, or use Settings → "Export data" to save it wherever you want.
+If you already had v0.1.0 installed, running the new installer upgrades in place — your data in `%APPDATA%\com.lessonkeeper.app\lessonkeeper.json` is preserved.

@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
 import { useT } from "../i18n/useT";
-import { CURRENCY_SYMBOLS, type Student, type AppSettings } from "../data/types";
+import {
+  CURRENCY_SYMBOLS,
+  type Student,
+  type AppSettings,
+  type PaymentType,
+} from "../data/types";
 
 type Props = {
   open: boolean;
@@ -13,8 +18,16 @@ type Props = {
     customPrice: number | null;
     prepaidBalance: number;
     phone: string | null;
+    paymentType: PaymentType;
   }) => void;
 };
+
+// Input limits: keep numbers and phone within sane bounds so the UI can't
+// be jammed with millions of digits.
+const NAME_MAX = 60;
+const PHONE_MAX = 24;
+const PRICE_MAX_DIGITS = 7; // up to 9,999,999 per lesson
+const BALANCE_MAX_DIGITS = 9; // up to ±999,999,999
 
 export default function StudentDialog({
   open,
@@ -28,6 +41,7 @@ export default function StudentDialog({
   const currencySymbol = CURRENCY_SYMBOLS[settings.currency];
 
   const [name, setName] = useState("");
+  const [paymentType, setPaymentType] = useState<PaymentType>("prepaid");
   const [useCustomPrice, setUseCustomPrice] = useState(false);
   const [customPrice, setCustomPrice] = useState("");
   const [prepaidBalance, setPrepaidBalance] = useState("0");
@@ -38,12 +52,14 @@ export default function StudentDialog({
     if (!open) return;
     if (student) {
       setName(student.name);
+      setPaymentType(student.paymentType ?? "prepaid");
       setUseCustomPrice(student.customPrice !== null);
       setCustomPrice(student.customPrice !== null ? String(student.customPrice) : "");
       setPrepaidBalance(String(student.prepaidBalance));
       setPhone(student.phone ?? "");
     } else {
       setName("");
+      setPaymentType("prepaid");
       setUseCustomPrice(false);
       setCustomPrice("");
       setPrepaidBalance("0");
@@ -53,7 +69,7 @@ export default function StudentDialog({
   }, [open, student]);
 
   function handleSubmit() {
-    const trimmedName = name.trim();
+    const trimmedName = name.trim().slice(0, NAME_MAX);
     if (!trimmedName) {
       setError(t("studentDialog.error.name"));
       return;
@@ -69,7 +85,8 @@ export default function StudentDialog({
       priceVal = v;
     }
 
-    const balanceVal = Number(prepaidBalance);
+    const balanceVal =
+      paymentType === "postpaid" ? 0 : Number(prepaidBalance);
     if (!Number.isFinite(balanceVal)) {
       setError(t("studentDialog.error.balance"));
       return;
@@ -79,8 +96,25 @@ export default function StudentDialog({
       name: trimmedName,
       customPrice: priceVal,
       prepaidBalance: balanceVal,
-      phone: phone.trim() || null,
+      phone: phone.trim().slice(0, PHONE_MAX) || null,
+      paymentType,
     });
+  }
+
+  // Controlled-input clampers: only accept strings that fit the limit.
+  function onPriceChange(s: string) {
+    if (s === "" || new RegExp(`^\\d{0,${PRICE_MAX_DIGITS}}$`).test(s)) {
+      setCustomPrice(s);
+    }
+  }
+  function onBalanceChange(s: string) {
+    if (
+      s === "" ||
+      s === "-" ||
+      new RegExp(`^-?\\d{0,${BALANCE_MAX_DIGITS}}$`).test(s)
+    ) {
+      setPrepaidBalance(s);
+    }
   }
 
   return (
@@ -106,11 +140,39 @@ export default function StudentDialog({
             className="input"
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value.slice(0, NAME_MAX))}
+            maxLength={NAME_MAX}
             placeholder={t("studentDialog.field.namePlaceholder")}
             autoFocus
           />
         </label>
+
+        <div className="field">
+          <span className="field-label">
+            {t("studentDialog.field.paymentType")}
+          </span>
+          <div className="row">
+            <button
+              type="button"
+              className={`btn ${paymentType === "prepaid" ? "btn-primary" : "btn-ghost"}`}
+              onClick={() => setPaymentType("prepaid")}
+            >
+              {t("studentDialog.paymentType.prepaid")}
+            </button>
+            <button
+              type="button"
+              className={`btn ${paymentType === "postpaid" ? "btn-primary" : "btn-ghost"}`}
+              onClick={() => setPaymentType("postpaid")}
+            >
+              {t("studentDialog.paymentType.postpaid")}
+            </button>
+          </div>
+          <p className="muted">
+            {paymentType === "prepaid"
+              ? t("studentDialog.paymentType.prepaidNote")
+              : t("studentDialog.paymentType.postpaidNote")}
+          </p>
+        </div>
 
         <div className="field">
           <span className="field-label">{t("studentDialog.field.price")}</span>
@@ -126,10 +188,10 @@ export default function StudentDialog({
             <div className="row">
               <input
                 className="input"
-                type="number"
-                min={0}
+                type="text"
+                inputMode="numeric"
                 value={customPrice}
-                onChange={(e) => setCustomPrice(e.target.value)}
+                onChange={(e) => onPriceChange(e.target.value)}
                 placeholder={String(settings.defaultPrice)}
               />
               <span className="muted-inline">{currencySymbol}</span>
@@ -143,22 +205,25 @@ export default function StudentDialog({
           )}
         </div>
 
-        <label className="field">
-          <span className="field-label">
-            {t("studentDialog.field.balance")}
-          </span>
-          <div className="row">
-            <input
-              className="input"
-              type="number"
-              value={prepaidBalance}
-              onChange={(e) => setPrepaidBalance(e.target.value)}
-              placeholder="0"
-            />
-            <span className="muted-inline">{currencySymbol}</span>
-          </div>
-          <p className="muted">{t("studentDialog.balanceNote")}</p>
-        </label>
+        {paymentType === "prepaid" && (
+          <label className="field">
+            <span className="field-label">
+              {t("studentDialog.field.balance")}
+            </span>
+            <div className="row">
+              <input
+                className="input"
+                type="text"
+                inputMode="numeric"
+                value={prepaidBalance}
+                onChange={(e) => onBalanceChange(e.target.value)}
+                placeholder="0"
+              />
+              <span className="muted-inline">{currencySymbol}</span>
+            </div>
+            <p className="muted">{t("studentDialog.balanceNote")}</p>
+          </label>
+        )}
 
         <label className="field">
           <span className="field-label">{t("studentDialog.field.phone")}</span>
@@ -166,7 +231,8 @@ export default function StudentDialog({
             className="input"
             type="tel"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => setPhone(e.target.value.slice(0, PHONE_MAX))}
+            maxLength={PHONE_MAX}
             placeholder={t("studentDialog.field.phonePlaceholder")}
           />
         </label>
