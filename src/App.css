@@ -108,6 +108,12 @@ p {
   font-size: 14px;
   color: white;
   letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.sidebar-brand-mark-img {
+  background: none;
+  object-fit: contain;
 }
 
 .sidebar-brand-name {

@@ -20,7 +20,11 @@ export default function Sidebar({ active, onChange }: Props) {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        <div className="sidebar-brand-mark">LK</div>
+        <img
+          src="/lessonkeeper-icon.png"
+          className="sidebar-brand-mark sidebar-brand-mark-img"
+          alt="LessonKeeper"
+        />
         <div className="sidebar-brand-text">
           <div className="sidebar-brand-name">LessonKeeper</div>
           <div className="sidebar-brand-tagline">{t("app.tagline")}</div>
@@ -40,7 +44,7 @@ export default function Sidebar({ active, onChange }: Props) {
         ))}
       </nav>
 
-      <div className="sidebar-footer">v0.3.0</div>
+      <div className="sidebar-footer">v0.3.1</div>
     </aside>
   );
 }

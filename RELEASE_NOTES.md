@@ -1,20 +1,19 @@
-## v0.3.0 — Vacations and Notes
+## v0.3.1 — Custom icon and configurable installer
 
-### New features
+### What's new
 
-- **Pause a student on vacation.** A new ⏸ button next to Edit/Delete on each student row. While paused, no balance is deducted, the lesson doesn't count toward Profit, and the student's calendar entries are dimmed. Click ▶ to bring them back — processing resumes from that moment forward (the break period is never retroactively charged).
-- **Notes screen.** A new sidebar tab (📝) that's a personal scratchpad for any thoughts: per-student notes, lesson ideas, reminders, anything. Two-pane layout with a notes list on the left and an editor on the right. Create as many as you want; each is auto-saved to your local data file.
+- **Custom app icon.** LessonKeeper now ships with its own brand icon everywhere: the executable in Explorer, the title-bar and taskbar icon, the Start Menu shortcut, the favicon, and the sidebar brand mark inside the app.
+- **Choose where to install.** The Windows NSIS installer now opens a small wizard that lets you:
+  - Pick **Install for me only** (default — installs to `%LOCALAPPDATA%\Programs\LessonKeeper`, no admin needed) or **Install for everyone** (default — installs to `C:\Program Files\LessonKeeper`, asks for admin).
+  - Pick **any drive and folder** for the install location via the **Browse…** button on the destination page. The default stays on your main drive (C:), but you can point it at D:, E:, an SSD, an external drive, anywhere.
+- Smaller installer size thanks to LZMA compression (the strongest NSIS supports).
 
-### How vacations work
+### Notes
 
-- Paused students are marked with a yellow «На каникулах» / «On break» tag on Home and Calendar.
-- Auto-deduction silently skips their lessons during the break.
-- The internal "last processed at" watermark still advances during the break — so when you un-pause, nothing is retroactively charged.
-- If you want to count an individual lesson during a break (e.g. they came once), open the Calendar history dialog for that lesson and toggle that date from "Not processed yet" to "Completed".
+- Your data file location (`%APPDATA%\com.lessonkeeper.app\lessonkeeper.json`) is **not** affected by where the program is installed — it always lives under your user profile, no matter which drive the .exe ended up on.
+- Upgrading from v0.3.0 or earlier preserves all your students, lessons, history, notes, and settings.
 
 ## Installers
 
-- **`LessonKeeper_0.3.0_x64-setup.exe`** — NSIS installer (recommended).
-- **`LessonKeeper_0.3.0_x64_en-US.msi`** — MSI installer.
-
-Upgrading from v0.2.0 or earlier preserves all your existing data — students, lessons, history, and settings carry over automatically.
+- **`LessonKeeper_0.3.1_x64-setup.exe`** — NSIS installer (recommended, with the new directory wizard).
+- **`LessonKeeper_0.3.1_x64_en-US.msi`** — MSI installer (Windows Installer; also lets you change the install dir).
