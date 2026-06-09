@@ -1,5 +1,5 @@
 import type { AppData, LessonRecord } from "../data/types";
-import { effectivePrice, isPostpaid } from "./format";
+import { effectivePrice, isPaused, isPostpaid } from "./format";
 import { occurrencesInRange, ymd, parseHHMM } from "./dates";
 
 /**
@@ -26,36 +26,26 @@ export function processElapsedLessons(
   const since = new Date(data.lastProcessedAt);
   if (since >= now) return data;
 
-  // First pass: do we have any new occurrences? Return same data if not, so
-  // React/save don't see a change and we don't write to disk uselessly.
-  let workToDo = false;
-  outer: for (const lesson of data.lessons) {
-    const student = data.students.find((s) => s.id === lesson.studentId);
-    if (!student) continue;
-    for (const moment of occurrencesInRange(
-      lesson.weekday,
-      lesson.time,
-      since,
-      now,
-    )) {
-      const dateStr = ymd(moment);
-      const existing = data.records.find(
-        (r) => r.lessonId === lesson.id && r.date === dateStr,
-      );
-      if (!existing) {
-        workToDo = true;
-        break outer;
-      }
+  // Quick check: any lesson occurrences in the [since, now] window at all?
+  // If so, we always advance `lastProcessedAt` past them, even if the only
+  // occurrences belong to paused students. Otherwise, the next un-pause
+  // would cause retroactive processing of the entire break period.
+  let anyInRange = false;
+  for (const lesson of data.lessons) {
+    if (
+      occurrencesInRange(lesson.weekday, lesson.time, since, now).length > 0
+    ) {
+      anyInRange = true;
+      break;
     }
   }
-
-  if (!workToDo) return data;
+  if (!anyInRange) return data;
 
   const next = structuredClone(data);
 
   for (const lesson of next.lessons) {
     const student = next.students.find((s) => s.id === lesson.studentId);
-    if (!student) continue;
+    if (!student || isPaused(student)) continue; // pause = skip entirely
 
     for (const moment of occurrencesInRange(
       lesson.weekday,

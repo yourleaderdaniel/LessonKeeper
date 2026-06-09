@@ -160,6 +160,26 @@ const ru: Dict = {
   "profit.recent.col.date": "Дата",
   "profit.recent.col.student": "Ученик",
   "profit.recent.col.amount": "Сумма",
+
+  // Vacation / pause on Home
+  "nav.notes": "Заметки",
+  "home.pausedTag": "На каникулах",
+  "home.tooltip.pause": "Поставить на паузу (каникулы)",
+  "home.tooltip.resume": "Вернуть с каникул",
+
+  // Notes screen
+  "notes.title": "Заметки",
+  "notes.subtitle": "Личный блокнот: заметки об учениках, идеях для уроков, что угодно.",
+  "notes.addButton": "+ Новая заметка",
+  "notes.listEmpty": "Нет заметок. Нажмите «+ Новая заметка» чтобы создать первую.",
+  "notes.editorEmpty": "Выберите заметку слева или создайте новую.",
+  "notes.untitled": "Без названия",
+  "notes.noContent": "Пусто…",
+  "notes.titlePlaceholder": "Название заметки",
+  "notes.contentPlaceholder": "Пиши здесь…",
+  "notes.deleteConfirm": "Удалить заметку «{title}»?",
+  "notes.charCount": "{count} / {max} символов",
+  "notes.updatedAt": "Обновлено: {date}",
 };
 
 const uk: Dict = {
@@ -302,6 +322,24 @@ const uk: Dict = {
   "profit.recent.col.date": "Дата",
   "profit.recent.col.student": "Учень",
   "profit.recent.col.amount": "Сума",
+
+  "nav.notes": "Нотатки",
+  "home.pausedTag": "На канікулах",
+  "home.tooltip.pause": "Поставити на паузу (канікули)",
+  "home.tooltip.resume": "Повернути з канікул",
+
+  "notes.title": "Нотатки",
+  "notes.subtitle": "Особистий записник: нотатки про учнів, ідеї для уроків, що завгодно.",
+  "notes.addButton": "+ Нова нотатка",
+  "notes.listEmpty": "Немає нотаток. Натисніть «+ Нова нотатка», щоб створити першу.",
+  "notes.editorEmpty": "Виберіть нотатку зліва або створіть нову.",
+  "notes.untitled": "Без назви",
+  "notes.noContent": "Порожньо…",
+  "notes.titlePlaceholder": "Назва нотатки",
+  "notes.contentPlaceholder": "Пиши тут…",
+  "notes.deleteConfirm": "Видалити нотатку «{title}»?",
+  "notes.charCount": "{count} / {max} символів",
+  "notes.updatedAt": "Оновлено: {date}",
 };
 
 const en: Dict = {
@@ -444,6 +482,24 @@ const en: Dict = {
   "profit.recent.col.date": "Date",
   "profit.recent.col.student": "Student",
   "profit.recent.col.amount": "Amount",
+
+  "nav.notes": "Notes",
+  "home.pausedTag": "On break",
+  "home.tooltip.pause": "Pause student (vacation / break)",
+  "home.tooltip.resume": "Resume student",
+
+  "notes.title": "Notes",
+  "notes.subtitle": "A personal scratchpad: student notes, lesson ideas, anything.",
+  "notes.addButton": "+ New note",
+  "notes.listEmpty": "No notes yet. Click “+ New note” to create the first one.",
+  "notes.editorEmpty": "Select a note on the left or create a new one.",
+  "notes.untitled": "Untitled",
+  "notes.noContent": "Empty…",
+  "notes.titlePlaceholder": "Note title",
+  "notes.contentPlaceholder": "Start writing…",
+  "notes.deleteConfirm": "Delete the note “{title}”?",
+  "notes.charCount": "{count} / {max} characters",
+  "notes.updatedAt": "Updated: {date}",
 };
 
 export const DICTIONARIES: Record<Language, Dict> = { ru, uk, en };

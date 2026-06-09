@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppData } from "../data/AppDataContext";
 import { useT } from "../i18n/useT";
 import StudentDialog from "../components/StudentDialog";
-import { effectivePrice, formatMoney, isPostpaid } from "../util/format";
+import { effectivePrice, formatMoney, isPaused, isPostpaid } from "../util/format";
 import type { PaymentType, Student } from "../data/types";
 
 export default function Home() {
@@ -33,6 +33,14 @@ export default function Home() {
     });
   }
 
+  function togglePause(student: Student) {
+    update((d) => {
+      const target = d.students.find((s) => s.id === student.id);
+      if (!target) return;
+      target.pausedSince = target.pausedSince ? null : new Date().toISOString();
+    });
+  }
+
   function handleSubmit(values: {
     name: string;
     customPrice: number | null;
@@ -60,6 +68,7 @@ export default function Home() {
         prepaidBalance: values.prepaidBalance,
         phone: values.phone,
         paymentType: values.paymentType,
+        pausedSince: null,
         createdAt: new Date().toISOString(),
       };
       update((d) => {
@@ -76,6 +85,18 @@ export default function Home() {
       </div>
     );
   }
+
+  const sharedProps = {
+    showPhone: settings.showPhoneColumn,
+    onEdit: openEdit,
+    onDelete: deleteStudent,
+    onTogglePause: togglePause,
+    formatPrice: (s: Student) =>
+      formatMoney(effectivePrice(s, settings), settings.currency),
+    formatBalance: (s: Student) =>
+      formatMoney(s.prepaidBalance, settings.currency),
+    t,
+  };
 
   return (
     <div className="screen">
@@ -100,25 +121,9 @@ export default function Home() {
           <p>{t("home.empty.body")}</p>
         </div>
       ) : settings.studentsView === "table" ? (
-        <StudentsTable
-          students={students}
-          showPhone={settings.showPhoneColumn}
-          onEdit={openEdit}
-          onDelete={deleteStudent}
-          formatPrice={(s) => formatMoney(effectivePrice(s, settings), settings.currency)}
-          formatBalance={(s) => formatMoney(s.prepaidBalance, settings.currency)}
-          t={t}
-        />
+        <StudentsTable students={students} {...sharedProps} />
       ) : (
-        <StudentsCards
-          students={students}
-          showPhone={settings.showPhoneColumn}
-          onEdit={openEdit}
-          onDelete={deleteStudent}
-          formatPrice={(s) => formatMoney(effectivePrice(s, settings), settings.currency)}
-          formatBalance={(s) => formatMoney(s.prepaidBalance, settings.currency)}
-          t={t}
-        />
+        <StudentsCards students={students} {...sharedProps} />
       )}
 
       <StudentDialog
@@ -137,6 +142,7 @@ type ListProps = {
   showPhone: boolean;
   onEdit: (s: Student) => void;
   onDelete: (s: Student) => void;
+  onTogglePause: (s: Student) => void;
   formatPrice: (s: Student) => string;
   formatBalance: (s: Student) => string;
   t: (key: string, vars?: Record<string, string | number>) => string;
@@ -155,11 +161,53 @@ function balanceCell(s: Student, formatBalance: (s: Student) => string, t: ListP
   );
 }
 
+function ActionButtons({
+  student,
+  onEdit,
+  onDelete,
+  onTogglePause,
+  t,
+}: {
+  student: Student;
+  onEdit: ListProps["onEdit"];
+  onDelete: ListProps["onDelete"];
+  onTogglePause: ListProps["onTogglePause"];
+  t: ListProps["t"];
+}) {
+  const paused = isPaused(student);
+  return (
+    <div className="row-actions">
+      <button
+        className={`icon-btn ${paused ? "icon-btn-active" : ""}`}
+        title={paused ? t("home.tooltip.resume") : t("home.tooltip.pause")}
+        onClick={() => onTogglePause(student)}
+      >
+        {paused ? "▶" : "⏸"}
+      </button>
+      <button
+        className="icon-btn"
+        title={t("common.edit")}
+        onClick={() => onEdit(student)}
+      >
+        ✏️
+      </button>
+      <button
+        className="icon-btn icon-btn-danger"
+        title={t("common.delete")}
+        onClick={() => onDelete(student)}
+      >
+        🗑️
+      </button>
+    </div>
+  );
+}
+
 function StudentsTable({
   students,
   showPhone,
   onEdit,
   onDelete,
+  onTogglePause,
   formatPrice,
   formatBalance,
   t,
@@ -178,15 +226,22 @@ function StudentsTable({
         </thead>
         <tbody>
           {students.map((s) => (
-            <tr key={s.id}>
+            <tr key={s.id} className={isPaused(s) ? "row-paused" : ""}>
               <td>
                 <div className="cell-name">
                   <div className="avatar">{initials(s.name)}</div>
                   <div>
                     <div className="cell-name-text">{s.name}</div>
-                    {s.customPrice !== null && (
-                      <div className="cell-tag">{t("home.customPriceTag")}</div>
-                    )}
+                    <div className="cell-tags">
+                      {s.customPrice !== null && (
+                        <span className="cell-tag">{t("home.customPriceTag")}</span>
+                      )}
+                      {isPaused(s) && (
+                        <span className="cell-tag cell-tag-paused">
+                          {t("home.pausedTag")}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </td>
@@ -194,22 +249,13 @@ function StudentsTable({
               <td>{balanceCell(s, formatBalance, t)}</td>
               {showPhone && <td>{s.phone ?? <span className="muted-inline">—</span>}</td>}
               <td>
-                <div className="row-actions">
-                  <button
-                    className="icon-btn"
-                    title={t("common.edit")}
-                    onClick={() => onEdit(s)}
-                  >
-                    ✏️
-                  </button>
-                  <button
-                    className="icon-btn icon-btn-danger"
-                    title={t("common.delete")}
-                    onClick={() => onDelete(s)}
-                  >
-                    🗑️
-                  </button>
-                </div>
+                <ActionButtons
+                  student={s}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  onTogglePause={onTogglePause}
+                  t={t}
+                />
               </td>
             </tr>
           ))}
@@ -224,6 +270,7 @@ function StudentsCards({
   showPhone,
   onEdit,
   onDelete,
+  onTogglePause,
   formatPrice,
   formatBalance,
   t,
@@ -231,33 +278,34 @@ function StudentsCards({
   return (
     <div className="students-cards">
       {students.map((s) => (
-        <article key={s.id} className="card student-card">
+        <article
+          key={s.id}
+          className={`card student-card ${isPaused(s) ? "row-paused" : ""}`}
+        >
           <header className="student-card-head">
             <div className="cell-name">
               <div className="avatar avatar-lg">{initials(s.name)}</div>
               <div>
                 <div className="student-card-name">{s.name}</div>
-                {s.customPrice !== null && (
-                  <div className="cell-tag">{t("home.customPriceTag")}</div>
-                )}
+                <div className="cell-tags">
+                  {s.customPrice !== null && (
+                    <span className="cell-tag">{t("home.customPriceTag")}</span>
+                  )}
+                  {isPaused(s) && (
+                    <span className="cell-tag cell-tag-paused">
+                      {t("home.pausedTag")}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="row-actions">
-              <button
-                className="icon-btn"
-                title={t("common.edit")}
-                onClick={() => onEdit(s)}
-              >
-                ✏️
-              </button>
-              <button
-                className="icon-btn icon-btn-danger"
-                title={t("common.delete")}
-                onClick={() => onDelete(s)}
-              >
-                🗑️
-              </button>
-            </div>
+            <ActionButtons
+              student={s}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              onTogglePause={onTogglePause}
+              t={t}
+            />
           </header>
 
           <dl className="student-card-fields">

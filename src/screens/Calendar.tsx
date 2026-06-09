@@ -4,7 +4,7 @@ import { useT } from "../i18n/useT";
 import LessonDialog from "../components/LessonDialog";
 import LessonHistoryDialog from "../components/LessonHistoryDialog";
 import { WEEKDAY_IDS, weekdayName } from "../data/weekdays";
-import { effectivePrice, formatMoney, formatTime } from "../util/format";
+import { effectivePrice, formatMoney, formatTime, isPaused } from "../util/format";
 import {
   findRecord,
   thisWeeksMoment,
@@ -170,10 +170,16 @@ export default function Calendar() {
                     );
                     const isCancelledThisWeek =
                       thisWeekRecord?.status === "cancelled";
+                    const studentPaused = student && isPaused(student);
+                    const dimmedClass = isCancelledThisWeek
+                      ? "lesson-row-cancelled"
+                      : studentPaused
+                        ? "lesson-row-paused"
+                        : "";
                     return (
                       <div
                         key={lesson.id}
-                        className={`lesson-row ${isCancelledThisWeek ? "lesson-row-cancelled" : ""}`}
+                        className={`lesson-row ${dimmedClass}`}
                       >
                         <div className="lesson-time">
                           {formatTime(lesson.time, settings.timeFormat)}
@@ -181,6 +187,11 @@ export default function Calendar() {
                         <div className="lesson-info">
                           <div className="lesson-student">
                             {student?.name ?? t("calendar.studentDeleted")}
+                            {studentPaused && (
+                              <span className="cell-tag cell-tag-paused lesson-row-tag">
+                                {t("home.pausedTag")}
+                              </span>
+                            )}
                           </div>
                           {student && (
                             <div className="lesson-price">{priceText}</div>

@@ -1,23 +1,20 @@
-## v0.2.0 — Profit screen, post-paid students, dialog fixes
+## v0.3.0 — Vacations and Notes
 
-### New
+### New features
 
-- **Profit screen**: a new sidebar tab showing how much you've earned. Three big numbers (this month, last 30 days, all time) plus a month-by-month breakdown and the last 25 completed lessons with student names and amounts.
-- **Post-paid students**: when adding/editing a student you can now pick **Pays after lesson** instead of Prepaid. For those students no prepaid balance is tracked — each completed lesson simply counts toward Profit, and a cancelled lesson cancels cleanly (nothing is added or refunded).
+- **Pause a student on vacation.** A new ⏸ button next to Edit/Delete on each student row. While paused, no balance is deducted, the lesson doesn't count toward Profit, and the student's calendar entries are dimmed. Click ▶ to bring them back — processing resumes from that moment forward (the break period is never retroactively charged).
+- **Notes screen.** A new sidebar tab (📝) that's a personal scratchpad for any thoughts: per-student notes, lesson ideas, reminders, anything. Two-pane layout with a notes list on the left and an editor on the right. Create as many as you want; each is auto-saved to your local data file.
 
-### Fixes
+### How vacations work
 
-- **Add/Edit dialog no longer closes when you select text and drag the mouse outside the field.** The backdrop click now requires both the press AND the release to happen on the backdrop.
-- **Input length limits** on the student form: name up to 60 chars, phone up to 24 chars, prices up to 7 digits, balance up to 9 digits. No more 50-digit phone numbers or prepaid balances of a billion zeros.
-
-### Notes
-
-- Existing data is fully compatible — students saved before this version are treated as Prepaid automatically.
-- The version number in the sidebar updates to `v0.2.0`.
+- Paused students are marked with a yellow «На каникулах» / «On break» tag on Home and Calendar.
+- Auto-deduction silently skips their lessons during the break.
+- The internal "last processed at" watermark still advances during the break — so when you un-pause, nothing is retroactively charged.
+- If you want to count an individual lesson during a break (e.g. they came once), open the Calendar history dialog for that lesson and toggle that date from "Not processed yet" to "Completed".
 
 ## Installers
 
-- **`LessonKeeper_0.2.0_x64-setup.exe`** — NSIS installer (recommended).
-- **`LessonKeeper_0.2.0_x64_en-US.msi`** — MSI installer.
+- **`LessonKeeper_0.3.0_x64-setup.exe`** — NSIS installer (recommended).
+- **`LessonKeeper_0.3.0_x64_en-US.msi`** — MSI installer.
 
-If you already had v0.1.0 installed, running the new installer upgrades in place — your data in `%APPDATA%\com.lessonkeeper.app\lessonkeeper.json` is preserved.
+Upgrading from v0.2.0 or earlier preserves all your existing data — students, lessons, history, and settings carry over automatically.

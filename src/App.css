@@ -616,6 +616,199 @@ p {
   border: 1px solid rgba(99, 102, 241, 0.3);
 }
 
+/* ===== Paused student (vacation) styling ===== */
+.cell-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.cell-tags .cell-tag {
+  margin-top: 0;
+}
+
+.cell-tag-paused {
+  color: var(--warning);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.row-paused {
+  opacity: 0.62;
+}
+
+.row-paused .balance,
+.row-paused .student-card-name {
+  text-decoration: line-through;
+  text-decoration-color: var(--text-muted);
+}
+
+.icon-btn-active {
+  background: var(--accent-soft);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: var(--accent-hover);
+}
+
+.lesson-row-paused {
+  opacity: 0.55;
+}
+
+.lesson-row-tag {
+  margin-left: 6px;
+  font-size: 10px;
+  vertical-align: middle;
+}
+
+/* ===== Notes screen ===== */
+.notes-screen .notes-layout {
+  padding: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 540px;
+}
+
+.notes-list {
+  border-right: 1px solid var(--border);
+  background: var(--bg-elevated);
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notes-list-empty {
+  padding: 24px 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+}
+
+.notes-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.notes-list-item:hover {
+  background: var(--surface);
+}
+
+.notes-list-item.active {
+  background: var(--accent-soft);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+.notes-list-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notes-list-preview {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notes-list-date {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.notes-editor {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  min-height: 0;
+}
+
+.notes-editor-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 40px;
+}
+
+.notes-editor-empty p {
+  max-width: 320px;
+}
+
+.notes-editor-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.notes-title-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 600;
+  font-family: inherit;
+  outline: none;
+  padding: 6px 0;
+  user-select: text;
+}
+
+.notes-title-input::placeholder {
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.notes-content-input {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  font-family: inherit;
+  outline: none;
+  padding: 20px;
+  resize: none;
+  user-select: text;
+  min-height: 300px;
+}
+
+.notes-content-input::placeholder {
+  color: var(--text-dim);
+}
+
+.notes-editor-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+
 /* ===== Settings grid ===== */
 .settings-grid {
   display: grid;

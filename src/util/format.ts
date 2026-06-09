@@ -29,6 +29,11 @@ export function isPostpaid(student: Student): boolean {
   return student.paymentType === "postpaid";
 }
 
+/** True if this student is currently on a break (vacation, illness, etc). */
+export function isPaused(student: Student): boolean {
+  return student.pausedSince !== null && student.pausedSince !== undefined;
+}
+
 /** Format a stored "HH:mm" (24h) time for display, honoring the user's setting. */
 export function formatTime(time24: string, format: TimeFormat): string {
   const m = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(time24);

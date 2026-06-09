@@ -38,7 +38,23 @@ export type Student = {
   prepaidBalance: number;
   phone: string | null;
   paymentType: PaymentType;
+  /**
+   * If set (ISO timestamp), the student is on a break. Auto-processing skips
+   * their lessons entirely while this is non-null — no deductions, no Profit
+   * counting. Clearing it back to null resumes processing from that moment on
+   * (the break period is NOT retroactively processed).
+   */
+  pausedSince: string | null;
   createdAt: string; // ISO 8601
+};
+
+/** A free-form note. Stored locally with the rest of the app data. */
+export type Note = {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string; // ISO 8601
+  updatedAt: string; // ISO 8601
 };
 
 /** 0 = Monday … 6 = Sunday */
@@ -70,6 +86,7 @@ export type AppData = {
   students: Student[];
   lessons: Lesson[];
   records: LessonRecord[];
+  notes: Note[];
   /** ISO timestamp of the last balance auto-processing pass. */
   lastProcessedAt: string | null;
 };
@@ -87,6 +104,7 @@ export const DEFAULT_APP_DATA: AppData = {
   students: [],
   lessons: [],
   records: [],
+  notes: [],
   lastProcessedAt: null,
 };
 
