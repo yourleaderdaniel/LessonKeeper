@@ -17,7 +17,7 @@ Built with [Tauri 2](https://tauri.app) + [React](https://react.dev) + TypeScrip
 - **Backup**: export/import all data to a single JSON file (any location you choose).
 - **Modern dark UI** built for desktop use, with sidebar navigation and keyboard support.
 
-## Install
+## Install ⬇️
 
 Grab the latest installer from the [Releases](../../releases) page:
 
